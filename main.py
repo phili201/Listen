@@ -30,6 +30,7 @@ maintrance_mode = 'inactive'
 VAPID_PRIVATE_KEY = os.getenv('VAPID_PRIVATE_KEY')
 VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY')
 VAPID_CLAIMS = {"sub": "mailto:prhode@e-mail.de"}
+MARKER = "\u200B\u200C\u200D\u200B\u200B\u200D\u200C\u200B\u200D\u200B\u200C\u200D\u200C\u200B\u200D\u200C\u200B\u200C\u200D\u200D\u200B\u200C\u200D"
 
 subscriptions = [] # TEMPORÄR
 

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Manage Users</title>
+</head>
+<body>
+    <h1>Manage Users</h1>
+    <form action="/reset_passkey_from_user_admin" method="POST">
+        <label for="email">User Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Reset Passkey</button>
+    </form>
+</body>
+</html>

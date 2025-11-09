@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Add List</title>
+</head>
+<body>
+    <h1>Add New List</h1>
+    <form method="POST" action="/add_list">
+        <label for="title">List Title:</label>
+        <input type="text" id="title" name="title" required>
+        <br>
+        <label for="items">Items (comma separated):</label>
+        <input type="text" id="items" name="items" required>
+        <br>
+        <label>
+            <input type="checkbox" id="showFieldCheckbox">Add Members to List
+        </label>
+        <div id="membersField" style="display: none; margin-top: 10px;">
+            <label for="members">Members (comma separated emails):</label>
+            <input type="text" id="members" name="members">
+        </div>
+        <script></script>
+        <button type="submit">Add List</button>
+    </form>
+    <a href="/">Back to Dashboard</a>
+</body>
+</html>

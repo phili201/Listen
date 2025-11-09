@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Listen APP</title>
+</head>
+<body>
+    <div id="lockScreen" class="lock-screen hidden">
+        <div>
+            <p>App locked</p>
+            <p>Please authenticate to unlock</p>
+            <button id="unlockBtn">Unlock</button>
+        </div>
+    </div>
+    <header>
+        <nav>
+            <a href="/add_list" style="margin-right: 20px;">Add New List</a>
+            <a href="/profile">Profile</a>
+        </nav>
+    </header>
+    <h1>Welcome to Listen APP Dashboard</h1>
+    <ul>
+        {% for list in lists %}
+            <li>{{ list.name }}</li>
+        {% endfor %}
+    </ul>
+<script>
+              if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/service-worker.js')
+            .then(() => console.log('Service Worker Registered'))
+            .catch(err => console.log('Service Worker registration failed: ', err));
+            navigator.serviceWorker.addEventListener("controllerchange", () => {
+                window.location.reload();
+            });
+            return navigator.serviceWorker.ready;
+        }
+      document.addEventListener("DOMContentLoaded", async () => {
+            const lockScreen = document.getElementById("lockScreen");
+            const unlockBtn = document.getElementById("unlockBtn");
+
+            const biometricEnabled = localStorage.getItem("biometricEnabled") === "true";
+
+
+            let fingerprintLocked = false;
+            try {
+                const res = await fetch('/get_my_user_admin');
+                const data = await res.json();
+                fingerprintLocked = data.fingerprint_locked;
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+            }
+
+            if (biometricEnabled && fingerprintLocked) {
+                lockScreen.classList.remove("hidden");
+                await requestBiometricAuth();
+            }
+
+            unlockBtn.addEventListener("click", async () => {
+                if (biometricEnabled) {
+                    await requestBiometricAuth();
+                } else {
+                    lockScreen.classList.add("hidden");
+                }
+            });
+            async function requestBiometricAuth() {
+                if (!window.PublicKeyCredential) {
+                    alert("Biometric login is not supported on this device");
+                    lockScreen.classList.add("hidden");
+                    return;
+                }
+                try {
+                    const publicKey = {
+                        challenge: new Uint8Array(32),
+                        timeout:60000,
+                        userVerification: "required",
+                    };
+                    const credential = await navigator.credentials.get({ publicKey });
+                    if (credential) {
+                        lockScreen.classList.add("hidden");
+                    }
+                } catch (err) {
+                    alert("Authentification failed: " + err.message + "\nPlease contact the Administrator at prhode@e-mail.de.");
+                }
+            }
+        }, 300);
+        VAPID_PUBLIC_KEY = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEo6hgpw0nbQmQ-j0LRjsfEOJ0PcZERzoxcjnh_z_8DbX5J7jTx9wCDa3ZN7PpRZKHE-OpFZoHKZJYwfP1AtOoqA";
+        async function subscribeUserToPush() {
+            const registration = await registerServiceWorker();
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+                alert('Permission for Notifications was denied');
+                return;
+            }
+            const subsciption = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+            await fetch('/subscribe', {
+                method: 'POST',
+                body: JSON.stringify(subsciption),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            alert('Subscribed to push notifications');
+            function urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding)
+                    .replace(/-/g, '+')
+                    .replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+                for (let i = 0; i < rawData.length; ++i) {
+                    outputArray[i] = rawData.charCodeAt(i);
+                }
+                return outputArray;
+            }
+            document.getElementById("enablePushBtn").addEventListener("click", subscribeUserToPush);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #0025f8;
+    color: #ffffff;
+    padding: 10px 20px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background: #ffffff;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #dddddd;
+}
+form {
+    margin-top: 20px;
+}
+input[type="text"], input[type="password"], input[type="email"] {
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+input[type="submit"] {
+    padding: 10px 20px;
+    background: #35424a;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+.lock-screen {
+    position: fixed;
+    top: 0; left:0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: colum;
+    z-index: 9999;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
+.hidden {
+    display: none;
+}
+button {
+    color: blue;
+    display: flex;
+}
+footer {
+    background: #0025f8;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+}

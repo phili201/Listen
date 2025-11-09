@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Listen APP</title>
+        <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/service-worker.js')
+            .then(() => console.log('Service Worker Registered'))
+            .catch(err => console.log('Service Worker registration failed: ', err));
+        }
+    </script>
+</head>
+<body>
+    <h1>You are not logged in</h1>
+    <p>Please log in to access the dashboard.</p>
+    <button onclick="window.location.href='/login'">Go to Login</button>
+    <button onclick="window.location.href='/register'">Go to Register</button>
+</body>
+<footer>
+    <p>Listen APP. All rights reserved.</p>
+    <p>Contact: prhode@e-mail.de</p>
+    <p>This App is at Time in the Beta Phase, by Problems please contact me.</p>
+</footer>
+</html>

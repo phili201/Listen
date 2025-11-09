@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="manifest" href="/static/manifest.json">
+      <meta name="theme-color" content="#4CAF50">
+      <link rel="stylesheet" href="/static/styles.css">
+      <title>Profile</title>
+    </head>
+    <body>
+        <h2>Welcome to your profile Settings</h2>
+        <label>
+            <input type="checkbox" id="bioToggle">Lock app with fingerprint(Biometric Authentication)
+        </label>
+              <script>
+        const bioToggle = document.getElementById("bioToggle");
+        bioToggle.checked = localStorage.getItem("biometricEnabled") === "true";
+        bioToggle.addEventListener("change", async () => {
+            const enabled = bioToggle.checked;
+            localStorage.setItem("biometricEnabled", enabled);
+            try {
+                await fetch('/update_fingerprint_lock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ locked: enabled })
+                });
+                console.log('Fingerprint lock setting updated successfully');
+            } catch (error) {
+                console.error('Error updating fingerprint lock setting:', error);
+            }
+        });
+      </script>
+      <label>
+            <input type="checkbox" id="enablePushBtn">Enable Push Notifications
+        </label>
+        <script>
+          async function subscribeUserToPush() {
+            if (!('serviceWorker' in navigator)) {
+              alert('Service Workers are not supported in this browser.');
+              return;
+            }
+            const registration = await navigator.serviceWorker.register('/static/service-worker.js');
+            const subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: VAPID_PUBLIC_KEY
+            });
+            subscriptions.push(subscription);
+            console.log('User subscribed to push notifications:', subscription);
+          }
+        </script>
+        <button onclick="registerPasskey()">Register Passkey(For App secure)</button>
+        <script>
+          async function registerPasskey() {
+            const res = await fetch('/register_passkey');
+            const options = await res.json();
+            options.challenge = Uint8Array.from(atob(options.challenge), c => c.charCodeAt(0));
+            options.user.id = Uint8Array.from(atob(options.user.id), c => c.charCodeAt(0));
+            const credential = await navigator.credentials.create({ publicKey: options });
+            const credicalData = {
+              id: credential.id,
+              rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+              type: credential.type,
+              response: {
+                attestationObject: btoa(String.fromCharCode(...new Uint8Array(credential.response.attestationObject))),
+                clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(credential.response.clientDataJSON))),
+              }
+            };
+            await fetch('/verify_passkey', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(credentialData)
+            });
+            alert('Passkey registered successfully!');
+          }
+          document.getElementById("enablePushBtn").addEventListener("click", subscribeUserToPush);
+        </script>
+        <button onclick="window.location.href='/change_password'">Change Password</button>
+    </body>
+</html>

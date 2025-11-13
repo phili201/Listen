@@ -1,4 +1,3 @@
-from code_protection import code_check
 import flask
 from flask import Flask, flash, request, session, redirect, render_template, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,7 +15,6 @@ from flask_mail import Mail, Message
 import base64
 from flask_cors import CORS
 
-code_check(file_path="main.py", project_folder="/home/philipp/Downloads/Listen APP")
 load_dotenv()
 
 app = Flask(__name__)
